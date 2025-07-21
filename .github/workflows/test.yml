@@ -1,0 +1,27 @@
+name: Test Add-on
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up DDEV
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/drud/ddev/master/scripts/install_ddev.sh | bash
+          ddev version
+
+      - name: Install bats
+        run: |
+          sudo apt-get update && sudo apt-get install -y bats
+
+      - name: Run bats tests
+        run: |
+          bats tests/test.bats

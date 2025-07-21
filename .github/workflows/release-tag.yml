@@ -1,0 +1,61 @@
+name: Release Tag on Merge
+
+description: 'Creates a new tag on main after a successful merge, following semantic versioning and semantic commits.'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          latest_tag=$(git tag --list 'v*' --sort=-v:refname | head -n1)
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+
+      - name: Get commit messages since last tag
+        id: get_commits
+        run: |
+          latest_tag="${{ steps.get_tag.outputs.latest_tag }}"
+          if [ -z "$latest_tag" ]; then
+            git log --pretty=format:'%s' > commits.txt
+          else
+            git log "$latest_tag"..HEAD --pretty=format:'%s' > commits.txt
+          fi
+          echo "commits<<EOF" >> $GITHUB_OUTPUT
+          cat commits.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Determine next version (semantic)
+        id: semver
+        uses: paulhatch/semantic-version@v5
+        with:
+          tag_prefix: "v"
+          major_pattern: "^BREAKING CHANGE:|^feat!|^fix!"
+          minor_pattern: "^feat"
+          patch_pattern: "^fix|^chore|^docs|^refactor|^perf|^style|^test"
+          default_bump: patch
+
+      - name: Create tag
+        if: ${{ steps.semver.outputs.new_tag != '' }}
+        run: |
+          git tag ${{ steps.semver.outputs.new_tag }}
+          git push origin ${{ steps.semver.outputs.new_tag }}
+
+      - name: Create GitHub Release
+        if: ${{ steps.semver.outputs.new_tag != '' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.semver.outputs.new_tag }}
+          name: Release ${{ steps.semver.outputs.new_tag }}
+          body: |
+            Changes since last release:
+            ${{ steps.get_commits.outputs.commits }}

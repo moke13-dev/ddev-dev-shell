@@ -163,9 +163,9 @@ done
 
 
 
-# Determine the absolute project root directory (one level above the script directory) without using cd
+# Determine the absolute project root directory (two levels above the script directory) without using cd
 SCRIPT_DIR="$(realpath "$(dirname -- "${BASH_SOURCE[0]}")")"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+PROJECT_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
 
 
 
