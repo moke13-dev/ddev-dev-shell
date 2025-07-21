@@ -1,7 +1,7 @@
 #!/usr/bin/fish
 #ddev-generated
 
-set -gx PATH "${HOME}/.composer/vendor/bin" $PATH
+set -gx PATH $HOME/.composer/vendor/bin $PATH
 
 # Source all ddev global cached completions for this project
 set -l DDEV_GLOBAL_CACHE "/mnt/ddev-global-cache"
