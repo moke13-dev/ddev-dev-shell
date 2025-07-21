@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u direnv -r direnv -f "direnv.linux-amd64" -b direnv
+
+USER root
