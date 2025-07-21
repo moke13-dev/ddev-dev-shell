@@ -4,7 +4,10 @@
 set -gx PATH "${HOME}/.composer/vendor/bin" $PATH
 
 # Source all ddev global cached completions for this project
-set -l cache_dir /mnt/ddev-global-cache/qemo-app-autocompletions/$DDEV_PROJECT
+DDEV_GLOBAL_CACHE="/mnt/ddev-global-cache"
+PROJECT_NAME="${DDEV_PROJECT:-project}"
+COMPLETION_CACHE_DIR="$DDEV_GLOBAL_CACHE/qemo-app-autocompletions/$PROJECT_NAME"
+set -l cache_dir "$COMPLETION_CACHE_DIR"
 if not test -d $cache_dir
     if type -q qemo-app-autocompletion
         echo "[ddev] Generating fish completions for project $DDEV_PROJECT ..."

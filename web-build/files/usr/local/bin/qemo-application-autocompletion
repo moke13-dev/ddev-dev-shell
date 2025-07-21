@@ -7,7 +7,7 @@ set -euo pipefail
 APP_DIR="/var/www/html"
 DDEV_GLOBAL_CACHE="/mnt/ddev-global-cache"
 PROJECT_NAME="${DDEV_PROJECT:-project}"
-COMPLETION_CACHE_DIR="$DDEV_GLOBAL_CACHE/fish-completions/$PROJECT_NAME"
+COMPLETION_CACHE_DIR="$DDEV_GLOBAL_CACHE/qemo-app-autocompletions/$PROJECT_NAME"
 
 mkdir -p "$COMPLETION_CACHE_DIR"
 
