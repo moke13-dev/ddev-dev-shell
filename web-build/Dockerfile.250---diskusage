@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u chenquan -r diskusage -f "diskusage-v(.*)linux-amd64\.tar\.gz" -b diskusage
+
+USER root
