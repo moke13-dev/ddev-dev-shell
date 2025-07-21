@@ -178,8 +178,7 @@ removal_actions:
       web-build/Dockerfile.250---zoxide \
       web-build/Dockerfile.350---application-autocompletion \
       web-build/files/usr/local/bin/qemo-github-installer \
-      web-build/files/usr/local/bin/qemo-application-autocompletion \
-    -bin"
+      web-build/files/usr/local/bin/qemo-application-autocompletion"
     for file in $files_to_check; do
       if [ -e "$file" ]; then
         if grep -q '# ddev-generated' "$file" 2>/dev/null; then
