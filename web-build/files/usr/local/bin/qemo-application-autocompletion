@@ -1,0 +1,59 @@
+#!/bin/bash
+# ddev-generated
+# Generate fish completions for project bin tools and cache them in ddev global cache
+
+set -euo pipefail
+
+APP_DIR="/var/www/html"
+DDEV_GLOBAL_CACHE="/mnt/ddev-global-cache"
+PROJECT_NAME="${DDEV_PROJECT:-project}"
+COMPLETION_CACHE_DIR="$DDEV_GLOBAL_CACHE/fish-completions/$PROJECT_NAME"
+
+mkdir -p "$COMPLETION_CACHE_DIR"
+
+function make_fish_completion() {
+    local EXECUTABLE=$1
+    local EXECUTABLE_PATH=$2
+    local ALIASES=$3
+    local OUTFILE="$COMPLETION_CACHE_DIR/$EXECUTABLE.fish"
+    PHP_CS_FIXER_IGNORE_ENV=1 symfony-autocomplete $ALIASES "$APP_DIR/$EXECUTABLE_PATH" --shell fish > "$OUTFILE"
+}
+
+if ! command -v symfony-autocomplete &> /dev/null; then
+    composer global require bamarni/symfony-console-autocomplete
+fi
+
+# bin/composer
+if [[ -f "$APP_DIR/bin/composer" ]]; then
+    make_fish_completion "composer" "bin/composer" "--aliases='bc' --aliases='bin/composer' --aliases='./bin/composer'"
+fi
+# bin/console
+if [[ -f "$APP_DIR/bin/console" ]]; then
+    make_fish_completion "console" "bin/console" "--aliases='bcl' --aliases='bin/console' --aliases='./bin/console'"
+fi
+# bin/magento
+if [[ -f "$APP_DIR/bin/magento" ]]; then
+    make_fish_completion "magento" "bin/magento" "--aliases='bm' --aliases='bin/magento' --aliases='./bin/magento'"
+fi
+# bin/n98-magerun2
+if [[ -f "$APP_DIR/bin/n98-magerun2" ]]; then
+    make_fish_completion "n98-magerun2" "bin/n98-magerun2" "--aliases='bn98' --aliases='bin/n98-magerun2' --aliases='./bin/n98-magerun2'"
+fi
+# vendor/bin/typo3cms
+if [[ -f "$APP_DIR/vendor/bin/typo3cms" ]]; then
+    make_fish_completion "typo3cms" "vendor/bin/typo3cms" "--aliases='t3c' --aliases='vendor/bin/typo3cms' --aliases='./vendor/bin/typo3cms'"
+fi
+# vendor/bin/typo3
+if [[ -f "$APP_DIR/vendor/bin/typo3" ]]; then
+    make_fish_completion "typo3" "vendor/bin/typo3" "--aliases='t3' --aliases='vendor/bin/typo3' --aliases='./vendor/bin/typo3'"
+fi
+# artisan
+if [[ -f "$APP_DIR/artisan" ]]; then
+    make_fish_completion "artisan" "artisan" "--aliases='a' --aliases='./artisan'"
+fi
+# php-cs-fixer
+if [[ -f "$APP_DIR/vendor/bin/php-cs-fixer" ]]; then
+    make_fish_completion "php-cs-fixer" "vendor/bin/php-cs-fixer" "--aliases='pcf' --aliases='vendor/bin/php-cs-fixer' --aliases='./vendor/bin/php-cs-fixer'"
+fi
+
+echo "Fish completions generated in $COMPLETION_CACHE_DIR"
