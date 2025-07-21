@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u Wilfred -r difftastic -f "difft-$(uname -m)-unknown-linux-gnu.tar.gz" -b difft
+
+USER root
