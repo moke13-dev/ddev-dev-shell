@@ -1,0 +1,7 @@
+# ddev-generated
+cheats:
+  paths:
+    - /mnt/ddev-global-cache/navi/cheats
+    - /mnt/ddev-global-cache/navi/navi-tldr-pages
+    - /mnt/ddev-global-cache/navi/dotfiles
+    - /mnt/ddev-global-cache/navi/cheats
