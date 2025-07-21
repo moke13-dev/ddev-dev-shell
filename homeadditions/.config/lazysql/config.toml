@@ -1,0 +1,5 @@
+# ddev-generated
+[[database]]
+Name = 'Database'
+Provider = 'mysql'
+URL = 'mysql://root:root@db'

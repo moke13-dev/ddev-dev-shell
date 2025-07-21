@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u jorgerojas26 -r lazysql -f "lazysql_Linux_$(uname -m).tar.gz" -b lazysql
+
+USER root
