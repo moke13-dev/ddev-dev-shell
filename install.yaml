@@ -140,6 +140,7 @@ removal_actions:
       homeadditions/.config/fish/conf.d/150---git.aliases.fish \
       homeadditions/.config/fish/conf.d/150---nvim.aliases.fish \
       homeadditions/.config/fish/conf.d/175---application.aliases.fish \
+      homeadditions/.config/fish/conf.d/200---application-autocompletion.plugin.fish \
       homeadditions/.config/fish/conf.d/250---base.aliases.fish \
       homeadditions/.config/fish/conf.d/250---composer-vendor-bin.fish \
       homeadditions/.config/fish/conf.d/250---direnv.plugin.fish \
@@ -149,7 +150,6 @@ removal_actions:
       homeadditions/.config/fish/conf.d/250---navi.plugin.fish \
       homeadditions/.config/fish/conf.d/250---sudo.plugin.fish \
       homeadditions/.config/fish/conf.d/250---zoxide.plugin.fish \
-      homeadditions/.config/fish/conf.d/350---ddev-fish-completion-cache.fish \
       web-build/Dockerfile.000---fish \
       web-build/Dockerfile.000---starship \
       web-build/Dockerfile.150---base \
