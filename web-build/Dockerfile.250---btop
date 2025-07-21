@@ -6,6 +6,6 @@ RUN apt-get update -y && \
 
 USER ${username}
 
-RUN qemo-github-installer -u aristocratos -r btop -f "btop-$(uname -m)-linux-musl.tbz" -b "bin/btop"
+RUN qemo-github-installer -u aristocratos -r btop -U https://github.com/aristocratos/btop/releases/download/v1.4.4/btop-x86_64-linux-musl.tbz -b bin/btop
 
 USER root

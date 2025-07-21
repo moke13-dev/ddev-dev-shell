@@ -6,6 +6,6 @@ RUN apt-get update -y && \
 
 USER ${username}
 
-RUN qemo-github-installer -u bee-san -r RustScan -f "$(uname -m)-linux-rustscan.tar.gz.zip" -b rustscan
+RUN qemo-github-installer -u bee-san -r RustScan -U https://github.com/bee-san/RustScan/releases/download/2.4.1/x86_64-linux-rustscan.tar.gz.zip -b rustscan
 
 USER root

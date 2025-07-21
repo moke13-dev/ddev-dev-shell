@@ -18,7 +18,7 @@ RUN apt-get update -y && \
         tar
 
 USER ${username}
-RUN qemo-github-installer -u neovim -r neovim -f "nvim-linux-$(uname -m).tar.gz" -b "bin/nvim"
+RUN qemo-github-installer -u neovim -r neovim -U https://github.com/neovim/neovim/releases/download/v0.11.3/nvim-linux-x86_64.tar.gz -b bin/nvim
 
 RUN git clone https://github.com/NvChad/starter /home/${username}/.config/nvim && \
     nvim --headless +MasonInstallAll +q

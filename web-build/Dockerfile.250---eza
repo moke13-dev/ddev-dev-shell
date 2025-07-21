@@ -1,6 +1,6 @@
 # ddev-generated
 USER ${username}
 
-RUN qemo-github-installer -u eza-community -r eza -f "eza_$(uname -m)-unknown-linux-gnu.tar.gz" -b eza
+RUN qemo-github-installer -u eza-community -r eza -U https://github.com/eza-community/eza/releases/download/v0.23.0/eza_x86_64-unknown-linux-gnu.tar.gz -b eza
 
 USER root

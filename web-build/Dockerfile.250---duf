@@ -1,6 +1,6 @@
 # ddev-generated
 USER ${username}
 
-RUN qemo-github-installer -u muesli -r duf -f "duf_(.*)_linux_$(uname -m).tar.gz" -b duf
+RUN qemo-github-installer -u muesli -r duf -U https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_linux_x86_64.tar.gz -b duf
 
 USER root
