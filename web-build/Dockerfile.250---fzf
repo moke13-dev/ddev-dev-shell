@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u junegunn -r fzf -f "fzf-(.*)-linux_amd64\.tar\.gz" -b fzf
+
+USER root
