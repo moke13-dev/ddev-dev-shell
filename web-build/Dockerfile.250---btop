@@ -1,0 +1,11 @@
+# ddev-generated
+RUN apt-get update -y && \
+    apt-get install -y \
+        libjemalloc2 \
+        libncursesw5
+
+USER ${username}
+
+RUN qemo-github-installer -u aristocratos -r btop -f "btop-$(uname -m)-linux-musl.tbz" -b "bin/btop"
+
+USER root
