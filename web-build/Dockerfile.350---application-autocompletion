@@ -1,0 +1,2 @@
+# ddev-generated
+COPY files/usr/local/bin/qemo-application-autocompletion /usr/local/bin/

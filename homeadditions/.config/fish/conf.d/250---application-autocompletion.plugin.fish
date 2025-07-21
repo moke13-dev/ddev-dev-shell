@@ -1,6 +1,8 @@
 #!/usr/bin/fish
 # ddev-generated
 
+set -gx PATH "${HOME}/.composer/vendor/bin" $PATH
+
 # Source all ddev global cached completions for this project
 set -l cache_dir /mnt/ddev-global-cache/qemo-app-autocompletions/$DDEV_PROJECT
 if not test -d $cache_dir

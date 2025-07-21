@@ -19,6 +19,4 @@ RUN apt-get update -y && \
         tar \
         unzip
 
-COPY files /
-
-RUN ls -lah /mnt/ddev-global-cache/
+COPY files/usr/local/bin/qemo-github-installer /usr/local/bin/

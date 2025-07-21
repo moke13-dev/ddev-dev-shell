@@ -87,6 +87,7 @@ project_files:
   - web-build/Dockerfile.250---rustscan
   - web-build/Dockerfile.250---tailspin
   - web-build/Dockerfile.250---zoxide
+  - web-build/Dockerfile.350---application-autocompletion
   - web-build/files
 
 
@@ -175,6 +176,7 @@ removal_actions:
       web-build/Dockerfile.250---rustscan \
       web-build/Dockerfile.250---tailspin \
       web-build/Dockerfile.250---zoxide \
+      web-build/Dockerfile.350---application-autocompletion \
       web-build/files/usr/local/bin/qemo-github-installer \
       web-build/files/usr/local/bin/qemo-application-autocompletion \
     -bin"
@@ -192,7 +194,7 @@ removal_actions:
     if [ -d homeadditions/.config ]; then
       find homeadditions/.config -type d -empty -delete
     fi
-    # Remove empty directories under web-build/files recursively
+    # Remove empty directories unter web-build/files rekursiv
     if [ -d web-build/files ]; then
       find web-build/files -type d -empty -delete
     fi
