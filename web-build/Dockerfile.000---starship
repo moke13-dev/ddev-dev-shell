@@ -1,0 +1,10 @@
+# ddev-generated
+RUN apt-get update -y && \
+    apt-get install -y \
+        curl
+
+USER ${username}
+RUN curl -sS https://starship.rs/install.sh | sh -s -- -y && \
+    starship preset nerd-font-symbols > ~/.config/starship.toml
+
+USER root

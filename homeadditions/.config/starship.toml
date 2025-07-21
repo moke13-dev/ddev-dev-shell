@@ -1,0 +1,17 @@
+# ddev-generated
+[git_commit]
+tag_disabled = false
+
+[git_status]
+format = '([\[ $all_status$ahead_behind\]]($style) )'
+up_to_date = "[ ](green)"
+staged = "[ S:${count} ](green)"
+stashed = "[ H:${count} ](orange)"
+conflicted = "[ C:${count} ](red)"
+ahead = "[ A:${count} ](red)"
+behind = "[ B:${count} ](red)"
+diverged = "[ ⇡${ahead_count}:⇣${behind_count} ](red)"
+untracked = "[ ?:${count} ](red)"
+modified = "[✎ U:${count} ](red)"
+renamed = "[ R:${count} ](red)"
+deleted = "[ D:${count} ](red)"
