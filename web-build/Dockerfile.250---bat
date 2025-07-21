@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u sharkdp -r bat -f "bat-(.*)-$(uname -m)-unknown-linux-gnu.tar.gz" -b bat
+
+USER root
