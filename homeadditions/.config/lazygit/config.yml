@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 os:
   editPreset: 'nvim'
 disableStartupPopups: true

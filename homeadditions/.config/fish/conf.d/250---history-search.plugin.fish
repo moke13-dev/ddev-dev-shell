@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 function fish_user_key_bindings
     # default-Mode (auch in multi-line Kommandos)

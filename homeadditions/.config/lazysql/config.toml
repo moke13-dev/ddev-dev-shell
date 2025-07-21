@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 [[database]]
 Name = 'Database'
 Provider = 'mysql'

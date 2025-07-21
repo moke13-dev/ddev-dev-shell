@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 alias bc='/var/www/html/bin/composer'
 alias bcl='/var/www/html/bin/console'

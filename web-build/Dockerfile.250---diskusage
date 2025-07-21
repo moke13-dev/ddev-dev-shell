@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 USER ${username}
 
 RUN qemo-github-installer -u chenquan -r diskusage -U https://github.com/chenquan/diskusage/releases/download/v1.2.8/diskusage-v1.2.8-linux-amd64.tar.gz -b diskusage

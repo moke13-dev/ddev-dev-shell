@@ -119,12 +119,12 @@ post_install_actions:
   # - perl -pi -e 's/oldstring/newstring/g' ${DDEV_APPROOT}/.ddev/docker-compose.addon-template.yaml
 
 # Shell actions that can be done during removal of the add-on.
-# Files listed in project_files section will be automatically removed here if they contain # ddev-generated line.
+# Files listed in project_files section will be automatically removed here if they contain #ddev-generated line.
 # removal_actions are executed in the context of the target project's .ddev directory.
 removal_actions:
   - |
     set -e
-    # Remove all files and directories added by this add-on if they contain # ddev-generated
+    # Remove all files and directories added by this add-on if they contain #ddev-generated
     # Hardcoded file list for robust removal
     files_to_check="\
       homeadditions/.bashrc \
@@ -181,11 +181,11 @@ removal_actions:
       web-build/files/usr/local/bin/qemo-application-autocompletion"
     for file in $files_to_check; do
       if [ -e "$file" ]; then
-        if grep -q '# ddev-generated' "$file" 2>/dev/null; then
+        if grep -q '#ddev-generated' "$file" 2>/dev/null; then
           echo "Removing $file"
           rm -f "$file"
         else
-          echo "Unwilling to remove '$file' because it does not have # ddev-generated in it; you can manually delete it if it is safe to delete."
+          echo "Unwilling to remove '$file' because it does not have #ddev-generated in it; you can manually delete it if it is safe to delete."
         fi
       fi
     done

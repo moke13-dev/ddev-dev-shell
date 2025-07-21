@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 USER ${username}
 
 RUN qemo-github-installer -u sharkdp -r fd -U https://github.com/sharkdp/fd/releases/download/v10.2.0/fd-v10.2.0-x86_64-unknown-linux-gnu.tar.gz -b fd

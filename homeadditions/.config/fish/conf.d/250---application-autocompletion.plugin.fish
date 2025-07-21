@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 set -gx PATH "${HOME}/.composer/vendor/bin" $PATH
 

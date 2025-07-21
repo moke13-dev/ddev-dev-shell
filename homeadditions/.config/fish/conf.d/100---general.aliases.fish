@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 alias grep='grep --color=auto'
 

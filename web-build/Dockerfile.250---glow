@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 USER ${username}
 
 RUN qemo-github-installer -u charmbracelet -r glow -U https://github.com/charmbracelet/glow/releases/download/v2.1.1/glow_2.1.1_Linux_x86_64.tar.gz -b glow

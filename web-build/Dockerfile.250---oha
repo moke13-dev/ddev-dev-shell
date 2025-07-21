@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 USER ${username}
 
 RUN qemo-github-installer -u hatoo -r oha -U https://github.com/hatoo/oha/releases/download/v1.9.0/oha-linux-amd64 -b oha

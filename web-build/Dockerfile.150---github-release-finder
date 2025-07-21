@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 RUN apt-get update && apt-get install -y wget \
     && mkdir -p -m 755 /etc/apt/keyrings \
     && out=$(mktemp) && wget -nv -O $out https://cli.github.com/packages/githubcli-archive-keyring.gpg \

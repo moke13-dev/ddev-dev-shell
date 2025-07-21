@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 USER ${username}
 
 RUN qemo-github-installer -u bensadeh -r tailspin -U https://github.com/bensadeh/tailspin/releases/download/5.4.5/tailspin-x86_64-unknown-linux-musl.tar.gz -b tspin

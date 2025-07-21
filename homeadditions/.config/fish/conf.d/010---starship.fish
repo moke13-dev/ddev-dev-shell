@@ -1,4 +1,4 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 starship init fish | source

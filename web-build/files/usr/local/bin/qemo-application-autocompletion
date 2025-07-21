@@ -1,5 +1,5 @@
 #!/bin/bash
-# ddev-generated
+#ddev-generated
 # Generate fish completions for project bin tools and cache them in ddev global cache
 
 set -euo pipefail

@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 if command -v fzf > /dev/null
     set -x FZF_DEFAULT_OPTS "--ansi --border=rounded --color=border:#f1f1f1 --layout=reverse --preview-window=right:60%"

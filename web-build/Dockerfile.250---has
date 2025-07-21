@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 RUN curl -sL https://git.io/_has | sudo tee /usr/local/bin/has >/dev/null && \
     chmod +x /usr/local/bin/has
 

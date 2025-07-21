@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 mkdir -p /mnt/ddev-global-cache/fishhistory/$HOSTNAME
 # workaround to keep the history file accross restarts

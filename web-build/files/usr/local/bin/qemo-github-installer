@@ -1,5 +1,5 @@
 #!/bin/bash
-# ddev-generated
+#ddev-generated
 
 set -euo pipefail
 IFS=$'\n\t'

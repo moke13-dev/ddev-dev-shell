@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 if command -v zoxide > /dev/null
     # set environment variable _ZO_DATA_DIR

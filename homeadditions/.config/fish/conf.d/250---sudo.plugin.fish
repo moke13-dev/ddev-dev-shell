@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 function sudo-command-line-toggle
     set -l cmd (commandline)

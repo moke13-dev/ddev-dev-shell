@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 if command -v fzf > /dev/null
     function git-status --description 'Get git status for a path'  --argument path

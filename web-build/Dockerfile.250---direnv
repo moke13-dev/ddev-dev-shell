@@ -1,4 +1,4 @@
-# ddev-generated
+#ddev-generated
 USER ${username}
 
 RUN qemo-github-installer -u direnv -r direnv -U https://github.com/direnv/direnv/releases/download/v2.37.1/direnv.linux-amd64 -b direnv

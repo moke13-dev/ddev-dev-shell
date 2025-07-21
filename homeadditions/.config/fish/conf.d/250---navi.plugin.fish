@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 if command -v navi > /dev/null
     if not test -d "/mnt/ddev-global-cache/navi"

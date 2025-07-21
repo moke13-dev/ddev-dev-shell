@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# ddev-generated
+#ddev-generated
 
 alias vi='nvim'
 alias Vi='nvim'
