@@ -140,8 +140,8 @@ removal_actions:
       homeadditions/.config/fish/conf.d/150---git.aliases.fish \
       homeadditions/.config/fish/conf.d/150---nvim.aliases.fish \
       homeadditions/.config/fish/conf.d/175---application.aliases.fish \
-      homeadditions/.config/fish/conf.d/200---application-autocompletion.plugin.fish \
-      homeadditions/.config/fish/conf.d/250---base.aliases.fish \
+      homeadditions/.config/fish/conf.d/250---application-autocompletion.plugin.fish \
+      homeadditions/.config/fish/conf.d/250---base.plugin.fish \
       homeadditions/.config/fish/conf.d/250---composer-vendor-bin.fish \
       homeadditions/.config/fish/conf.d/250---direnv.plugin.fish \
       homeadditions/.config/fish/conf.d/250---fzf.plugin.fish \
