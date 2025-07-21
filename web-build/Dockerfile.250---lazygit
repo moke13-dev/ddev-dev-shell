@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u jesseduffield -r lazygit -f "lazygit_(.*)_Linux_$(uname -m).tar.gz" -b lazygit
+
+USER root
