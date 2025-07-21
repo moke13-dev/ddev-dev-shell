@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u pemistahl -r grex -f "grex-v(.*)-$(uname -m)-unknown-linux-musl.tar.gz" -b grex
+
+USER root

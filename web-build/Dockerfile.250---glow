@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u charmbracelet -r glow -f "glow_(.*)_Linux_$(uname -m).tar.gz" -b glow
+
+USER root

@@ -1,0 +1,6 @@
+# ddev-generated
+USER ${username}
+
+RUN qemo-github-installer -u gitleaks -r gitleaks -f "gitleaks_(.*)_linux_x64.tar.gz" -b gitleaks
+
+USER root
