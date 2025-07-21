@@ -1,0 +1,198 @@
+# Details about the install.yaml file are at https://ddev.readthedocs.io/en/stable/users/extend/additional-services/#sections-and-features-of-ddev-get-add-on-installyaml
+
+name: ddev-dev-shell
+
+# pre_install_actions - list of actions to run before installing the addon.
+# Examples would be removing an extraneous docker volume,
+# or doing a sanity check for requirements.
+# DDEV environment variables can be interpolated into these actions
+# pre_install_actions are executed in the context of the target project's root directory.
+pre_install_actions:
+  # - |
+  #   #ddev-description:Check architecture type for incompatible arm64 type
+  #   if [ "$(uname -m)" = "arm64" -o "$(uname -m)" = "aarch64" ]; then
+  #     echo "This package does not work on arm64 (Apple Silicon) machines";
+  #     exit 1;
+  #   fi
+
+  # - "docker volume rm ddev-${DDEV_PROJECT}_solr 2>/dev/null || true"
+
+  # You can also check for client DDEV version with ddev_version_constraint (see below).
+  # - |
+  #   #ddev-description:Checking DDEV version
+  #   if ! ( ddev debug capabilities 2>/dev/null | grep corepack >/dev/null 2>&1 ) ; then
+  #     echo "This add-on requires DDEV v1.23+ or higher, please upgrade." && exit 2
+  #   fi
+
+  # - 'echo "what is your platform.sh token" && read x'
+
+  # This item shows templating using DDEV environment variables.
+  # - |
+  #   #ddev-description:Touch a file to create it
+  #   touch ${DDEV_APPROOT}/.ddev/somefile.${DDEV_PROJECT_TYPE}.${DDEV_DOCROOT}.txt
+
+  # This item shows complex go templating possibilities based on yaml_read_files
+  # - |
+  #   #ddev-description:Create a config.platformsh.yaml
+  #   cat <<EOF >${DDEV_APPROOT}/.ddev/config.platformsh.yaml
+  #   php_version: {{ trimPrefix "php:" .platformapp.type }}
+  #   database:
+  #     type: {{ regexReplaceAll ":.*$" .services.db.type "" }}
+  #     version: {{ regexReplaceAll "^.*:" .services.db.type "" }}
+
+  #   docroot: {{ dig "web" "locations" "/" "root" "notfound" .platformapp }}
+  #   {{- if eq .platformapp.build.flavor "composer" }}
+  #   hooks:
+  #     post-start:
+  #       - composer: install
+  #   {{- if .platformapp.hooks.deploy }}
+  #       - exec: "{{ trimAll "\n" .platformapp.hooks.deploy | splitList "\n" | join ` && ` }}"
+  #   {{- end }}
+  #   {{- end }}
+
+  #   EOF
+
+# list of files and directories listed that are copied into project .ddev directory
+# Each file should contain #ddev-generated so it can be replaced by a later `ddev add-on get`
+# if it hasn't been modified by the user.
+# DDEV environment variables can be interpolated into these filenames
+# If you use directories, they must be directories that are managed
+# by this add-on, or removal could remove things that are not owned by it
+project_files:
+  - homeadditions/.bashrc
+  - homeadditions/.config
+  - web-build/Dockerfile.000---fish
+  - web-build/Dockerfile.000---starship
+  - web-build/Dockerfile.150---base
+  - web-build/Dockerfile.150---github-release-finder
+  - web-build/Dockerfile.200---neovim
+  - web-build/Dockerfile.250---bat
+  - web-build/Dockerfile.250---btop
+  - web-build/Dockerfile.250---difft
+  - web-build/Dockerfile.250---direnv
+  - web-build/Dockerfile.250---diskusage
+  - web-build/Dockerfile.250---duf
+  - web-build/Dockerfile.250---eza
+  - web-build/Dockerfile.250---fd
+  - web-build/Dockerfile.250---fzf
+  - web-build/Dockerfile.250---gitleaks
+  - web-build/Dockerfile.250---glow
+  - web-build/Dockerfile.250---grex
+  - web-build/Dockerfile.250---has
+  - web-build/Dockerfile.250---lazygit
+  - web-build/Dockerfile.250---lazysql
+  - web-build/Dockerfile.250---navi
+  - web-build/Dockerfile.250---oha
+  - web-build/Dockerfile.250---ouch
+  - web-build/Dockerfile.250---rustscan
+  - web-build/Dockerfile.250---tailspin
+  - web-build/Dockerfile.250---zoxide
+  - web-build/files
+
+
+# List of files and directories that are copied into the global .ddev directory
+# DDEV environment variables can be interpolated into these filenames
+# Note that if these files are used by a team, you will need to automate their installation
+# by adding `ddev add-on get` to your workflow to ensure that everyone has them.
+# Otherwise, use 'project_files' to commit them to the repository.
+global_files:
+  # - commands/web/add-on-command
+  # - homeadditions/some-file.txt
+
+# Version constraint for DDEV that will be validated against the running DDEV executable
+# and prevent add-on from being installed if it doesn't validate.
+# See https://github.com/Masterminds/semver#checking-version-constraints for constraint rules.
+# Available with DDEV v1.23.4+, and works only for DDEV v1.23.4+ binaries
+# example: ddev_version_constraint: '>= v1.23.4'
+ddev_version_constraint: ''
+
+# List of add-on names that this add-on depends on
+dependencies:
+  # - redis
+
+# DDEV environment variables can be interpolated into these actions.
+# post_install_actions are executed in the context of the target project's .ddev directory.
+post_install_actions:
+  # - chmod +x ~/.ddev/commands/web/somecommand
+  # - touch ${DDEV_APPROOT}/somefile.${GOOS}.${DDEV_WEBSERVER}
+  # - perl -pi -e 's/oldstring/newstring/g' ${DDEV_APPROOT}/.ddev/docker-compose.addon-template.yaml
+
+# Shell actions that can be done during removal of the add-on.
+# Files listed in project_files section will be automatically removed here if they contain #ddev-generated line.
+# removal_actions are executed in the context of the target project's .ddev directory.
+removal_actions:
+  - |
+    set -e
+    # Remove all files and directories added by this add-on if they contain #ddev-generated
+    # Hardcoded file list for robust removal
+    files_to_check="\
+      homeadditions/.bashrc \
+      homeadditions/.config/starship.toml \
+      homeadditions/.config/lazygit/config.yml \
+      homeadditions/.config/btop/btop.conf \
+      homeadditions/.config/navi/config.yaml \
+      homeadditions/.config/lazysql/config.toml \
+      homeadditions/.config/fish/conf.d/000---fish.fish \
+      homeadditions/.config/fish/conf.d/010---starship.fish \
+      homeadditions/.config/fish/conf.d/100---general.aliases.fish \
+      homeadditions/.config/fish/conf.d/150---eza.aliases.fish \
+      homeadditions/.config/fish/conf.d/150---git.aliases.fish \
+      homeadditions/.config/fish/conf.d/150---nvim.aliases.fish \
+      homeadditions/.config/fish/conf.d/175---application.aliases.fish \
+      homeadditions/.config/fish/conf.d/250---base.aliases.fish \
+      homeadditions/.config/fish/conf.d/250---composer-vendor-bin.fish \
+      homeadditions/.config/fish/conf.d/250---direnv.plugin.fish \
+      homeadditions/.config/fish/conf.d/250---fzf.plugin.fish \
+      homeadditions/.config/fish/conf.d/250---git.plugin.fish \
+      homeadditions/.config/fish/conf.d/250---history-search.plugin.fish \
+      homeadditions/.config/fish/conf.d/250---navi.plugin.fish \
+      homeadditions/.config/fish/conf.d/250---sudo.plugin.fish \
+      homeadditions/.config/fish/conf.d/250---zoxide.plugin.fish \
+      homeadditions/.config/fish/conf.d/350---ddev-fish-completion-cache.fish \
+      web-build/Dockerfile.000---fish \
+      web-build/Dockerfile.000---starship \
+      web-build/Dockerfile.150---base \
+      web-build/Dockerfile.150---github-release-finder \
+      web-build/Dockerfile.200---neovim \
+      web-build/Dockerfile.250---bat \
+      web-build/Dockerfile.250---btop \
+      web-build/Dockerfile.250---difft \
+      web-build/Dockerfile.250---direnv \
+      web-build/Dockerfile.250---diskusage \
+      web-build/Dockerfile.250---duf \
+      web-build/Dockerfile.250---eza \
+      web-build/Dockerfile.250---fd \
+      web-build/Dockerfile.250---fzf \
+      web-build/Dockerfile.250---gitleaks \
+      web-build/Dockerfile.250---glow \
+      web-build/Dockerfile.250---grex \
+      web-build/Dockerfile.250---has \
+      web-build/Dockerfile.250---lazygit \
+      web-build/Dockerfile.250---lazysql \
+      web-build/Dockerfile.250---navi \
+      web-build/Dockerfile.250---oha \
+      web-build/Dockerfile.250---ouch \
+      web-build/Dockerfile.250---rustscan \
+      web-build/Dockerfile.250---tailspin \
+      web-build/Dockerfile.250---zoxide \
+      web-build/files/usr/local/bin/qemo-github-installer \
+      web-build/files/usr/local/bin/qemo-application-autocompletion \
+    -bin"
+    for file in $files_to_check; do
+      if [ -e "$file" ]; then
+        if grep -q '# ddev-generated' "$file" 2>/dev/null; then
+          echo "Removing $file"
+          rm -f "$file"
+        else
+          echo "Unwilling to remove '$file' because it does not have # ddev-generated in it; you can manually delete it if it is safe to delete."
+        fi
+      fi
+    done
+    # Remove empty directories unter .config rekursiv
+    if [ -d homeadditions/.config ]; then
+      find homeadditions/.config -type d -empty -delete
+    fi
+    # Remove empty directories under web-build/files recursively
+    if [ -d web-build/files ]; then
+      find web-build/files -type d -empty -delete
+    fi
