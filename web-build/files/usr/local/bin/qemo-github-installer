@@ -1,0 +1,244 @@
+#!/bin/bash
+# ddev-generated
+
+set -euo pipefail
+IFS=$'\n\t'
+
+DOWNLOAD_FOLDER="/tmp"
+EXTRACT_FOLDER="/opt/qemo"
+
+# Function to display usage information
+show_help() {
+    echo "Usage: $0 [options]"
+    echo ""
+    echo "Options:"
+    echo "  -u, --user <username>    GitHub repository owner"
+    echo "  -r, --repo <name>        GitHub repository name"
+    echo "  -f, --file <string>      Filename pattern to match (default: '')"
+    echo "  -U, --url <url>          Direct download URL (overrides GitHub lookup)"
+    echo "  -h, --help               Show this help message"
+    echo ""
+    echo "Example:"
+    echo "  $0 -u user -r repo -f zip"
+}
+
+check_archive_type() {
+    local FILE="$1"
+    echo "[DEBUG] Checking archive type for: $FILE" >&2
+    if file "$FILE" | grep -q "Zip archive" > /dev/null 2>&1; then
+        echo "[DEBUG] Detected zip archive" >&2
+        echo "zip"
+        return 0
+    fi
+    if tar -tf "$FILE" > /dev/null 2>&1; then
+        echo "[DEBUG] Detected tar archive" >&2
+        echo "tar"
+        return 0
+    fi
+    if head -c 4 "$FILE" | grep -q 'ELF'; then
+        echo "[DEBUG] Detected ELF binary" >&2
+        echo "bin"
+        return 0
+    fi
+    echo "[DEBUG] Unknown file type" >&2
+    echo "0"
+    return 1
+}
+
+process_file() {
+    local FILE="$1"
+    echo "[DEBUG] Processing file: $FILE" >&2
+    local FILE_TYPE
+    FILE_TYPE=$(check_archive_type "$FILE")
+    echo "[DEBUG] FILE_TYPE: $FILE_TYPE" >&2
+    local TOP_FOLDER
+    if [[ "$FILE_TYPE" == "zip" ]]; then
+        TOP_FOLDER=$(zipinfo -1 "$FILE" | head -n 1 | sed 's/^\.\///' | grep '/' | cut -d '/' -f 1 | tr -d '/')
+        echo "[DEBUG] ZIP top folder: $TOP_FOLDER" >&2
+    elif [[ "$FILE_TYPE" == "tar" ]]; then
+        TOP_FOLDER=$(tar -tf "$FILE" | head -n 1 | sed 's/^\.\///' | grep '/' | cut -d '/' -f 1 | tr -d '/')
+        echo "[DEBUG] TAR top folder: $TOP_FOLDER" >&2
+    elif [[ "$FILE_TYPE" == "bin" ]]; then
+        TOP_FOLDER="$REPO"
+        echo "[DEBUG] BIN top folder: $TOP_FOLDER" >&2
+    else
+        echo "[DEBUG] File type is not supported" >&2
+        echo "File type is not supported"
+        return 1
+    fi
+    local TARGET_EXTRACTED_FOLDER="$EXTRACT_FOLDER/${TOP_FOLDER:-$REPO}"
+    echo "[DEBUG] Target extracted folder: $TARGET_EXTRACTED_FOLDER" >&2
+    if [ -d "$TARGET_EXTRACTED_FOLDER" ]; then
+        echo "[DEBUG] Removing existing target extracted folder: $TARGET_EXTRACTED_FOLDER" >&2
+        sudo rm -rf "$TARGET_EXTRACTED_FOLDER"
+    fi
+    local FOLDER_PATH_TO_EXTRACT="$EXTRACT_FOLDER"
+    if [ "$TOP_FOLDER" = "." ] || [ -z "$TOP_FOLDER" ] || [ "$FILE_TYPE" = "bin" ]; then
+        FOLDER_PATH_TO_EXTRACT="$TARGET_EXTRACTED_FOLDER"
+        echo "[DEBUG] Using folder path to extract: $FOLDER_PATH_TO_EXTRACT" >&2
+        sudo mkdir -p "$TARGET_EXTRACTED_FOLDER"
+    fi
+    local EXTRACTED_FILES=""
+    if [[ "$FILE_TYPE" == "zip" ]]; then
+        echo "[DEBUG] Unzipping $FILE to $FOLDER_PATH_TO_EXTRACT" >&2
+        unzip -d "$FOLDER_PATH_TO_EXTRACT" "$FILE" > /dev/null 2>&1
+        EXTRACTED_FILES=$(zipinfo -1 "$FILE")
+    elif [[ "$FILE_TYPE" == "tar" ]]; then
+        echo "[DEBUG] Extracting tar $FILE to $FOLDER_PATH_TO_EXTRACT" >&2
+        sudo mkdir -p "$FOLDER_PATH_TO_EXTRACT"
+        sudo tar -C "$FOLDER_PATH_TO_EXTRACT" -xf "$FILE" > /dev/null 2>&1
+        EXTRACTED_FILES=$(tar -tf "$FILE")
+    elif [[ "$FILE_TYPE" == "bin" ]]; then
+        echo "[DEBUG] Handling binary file: $FILE" >&2
+        chmod +x "$FILE"
+        if [[ -n "${BIN:-}" ]]; then
+            echo "[DEBUG] Moving binary to $FOLDER_PATH_TO_EXTRACT/$BIN" >&2
+            sudo mkdir -p "$(dirname "$FOLDER_PATH_TO_EXTRACT/$BIN")"
+            sudo mv "$FILE" "$FOLDER_PATH_TO_EXTRACT/$BIN"
+        else
+            echo "[DEBUG] Moving binary to $FOLDER_PATH_TO_EXTRACT/" >&2
+            sudo mv "$FILE" "$FOLDER_PATH_TO_EXTRACT/"
+        fi
+    else
+        echo "[DEBUG] File type is not supported" >&2
+        echo "File type is not supported"
+        return 1
+    fi
+    local EXTRACTED_FILES_COUNT
+    EXTRACTED_FILES_COUNT=$(wc -l <<< "$EXTRACTED_FILES")
+    echo "[DEBUG] Extracted files count: $EXTRACTED_FILES_COUNT" >&2
+    if [[ "$EXTRACTED_FILES_COUNT" == "1" ]]; then
+        local EXTRACTED_FILE
+        EXTRACTED_FILE=$(head -n1 <<< "$EXTRACTED_FILES")
+        local FILE_TYPE2
+        FILE_TYPE2=$(check_archive_type "$TARGET_EXTRACTED_FOLDER/$EXTRACTED_FILE")
+        echo "[DEBUG] Checking nested archive type: $FILE_TYPE2" >&2
+        if [[ "$FILE_TYPE2" == "zip" || "$FILE_TYPE2" == "tar" ]]; then
+            echo "[DEBUG] Found nested archive, extracting recursively" >&2
+            sudo mv "$TARGET_EXTRACTED_FOLDER/$EXTRACTED_FILE" /tmp
+            sudo rm -rf "$TARGET_EXTRACTED_FOLDER"
+            local TARGET_EXTRACTED_FOLDER2
+            TARGET_EXTRACTED_FOLDER2=$(process_file "/tmp/$EXTRACTED_FILE")
+            sudo rm -f "/tmp/$EXTRACTED_FILE"
+            TARGET_EXTRACTED_FOLDER="$TARGET_EXTRACTED_FOLDER2"
+        fi
+    fi
+    echo "[DEBUG] Removing original file: $FILE" >&2
+    sudo rm -rf "$FILE"
+    echo "[DEBUG] Returning extracted folder: $TARGET_EXTRACTED_FOLDER" >&2
+    echo "$TARGET_EXTRACTED_FOLDER"
+}
+
+# Tool check (jq, curl, zipinfo, tar, unzip, sudo)
+for tool in jq curl zipinfo tar unzip sudo; do
+    if ! command -v "$tool" >/dev/null 2>&1; then
+        echo "Error: Required tool '$tool' is not installed." >&2
+        exit 1
+    fi
+done
+
+USER=""
+REPO=""
+FILE=""
+BIN=""
+DOWNLOAD_URL=""
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -u|--user)
+            USER="$2"
+            echo "[DEBUG] Set USER: $USER"
+            shift 2
+            ;;
+        -r|--repo)
+            REPO="$2"
+            echo "[DEBUG] Set REPO: $REPO"
+            shift 2
+            ;;
+        -f|--file)
+            FILE="$2"
+            echo "[DEBUG] Set FILE: $FILE"
+            shift 2
+            ;;
+        -b|--bin)
+            BIN="$2"
+            echo "[DEBUG] Set BIN: $BIN"
+            shift 2
+            ;;
+        -U|--url)
+            DOWNLOAD_URL="$2"
+            echo "[DEBUG] Set DOWNLOAD_URL: $DOWNLOAD_URL"
+            shift 2
+            ;;
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+echo "[DEBUG] USER: $USER, REPO: $REPO, FILE: $FILE, BIN: $BIN"
+if [ -z "$USER" ] || [ -z "$REPO" ]; then
+    echo "Error: User and repository names are required"
+    show_help
+    exit 1
+fi
+
+echo "[DEBUG] USER: $USER, REPO: $REPO, FILE: $FILE, BIN: $BIN"
+
+FILE="${FILE:-}"
+
+if [ -z "$DOWNLOAD_URL" ]; then
+    echo "[DEBUG] Querying GitHub API for latest release asset"
+    DOWNLOAD_URL=$(curl -sL "https://api.github.com/repos/$USER/$REPO/releases/latest" \
+        | jq -r --arg pattern "$FILE" '.assets[] | select(.name | test($pattern)) | .browser_download_url' \
+        | head -n 1)
+    echo "[DEBUG] DOWNLOAD_URL: $DOWNLOAD_URL"
+    if [ -z "$DOWNLOAD_URL" ]; then
+        echo "[DEBUG] No matching file found"
+        echo "No matching file found"
+        exit 1
+    fi
+else
+    echo "[DEBUG] Using provided DOWNLOAD_URL: $DOWNLOAD_URL"
+fi
+
+if [ ! -d "$EXTRACT_FOLDER" ]; then
+    echo "[DEBUG] Creating extract folder: $EXTRACT_FOLDER"
+    sudo mkdir -p "$EXTRACT_FOLDER"
+fi
+
+DOWNLOADED_FILENAME="$DOWNLOAD_FOLDER/${DOWNLOAD_URL##*/}"
+
+echo "[DEBUG] Downloaded filename will be: $DOWNLOADED_FILENAME"
+
+sudo rm -f "$DOWNLOADED_FILENAME"
+echo "[DEBUG] Downloading $DOWNLOAD_URL"
+curl -sL "$DOWNLOAD_URL" -o "$DOWNLOADED_FILENAME"
+
+echo "[DEBUG] Calling process_file for $DOWNLOADED_FILENAME"
+EXTRACTED_FOLDER_PATH=$(process_file "$DOWNLOADED_FILENAME")
+echo "[DEBUG] EXTRACTED_FOLDER_PATH: $EXTRACTED_FOLDER_PATH"
+if [ "$EXTRACTED_FOLDER_PATH" = "File type is not supported" ]; then
+    echo "[DEBUG] Extraction failed: File type is not supported"
+    exit 1
+fi
+
+echo "[DEBUG] Changing ownership of $EXTRACT_FOLDER to root:root"
+sudo chown root:root -Rf "$EXTRACT_FOLDER"
+
+if [ -n "$BIN" ]; then
+    echo "[DEBUG] BIN is set: $BIN"
+    if [ -e "$EXTRACTED_FOLDER_PATH/$BIN" ]; then
+        echo "[DEBUG] Symlinking $EXTRACTED_FOLDER_PATH/$BIN to /usr/local/bin/"
+        sudo ln -sf "$EXTRACTED_FOLDER_PATH/$BIN" "/usr/local/bin/"
+    else
+        echo "Warning: $EXTRACTED_FOLDER_PATH/$BIN does not exist, skipping symlink creation."
+    fi
+fi
+
+echo "Extraction and setup completed successfully."
